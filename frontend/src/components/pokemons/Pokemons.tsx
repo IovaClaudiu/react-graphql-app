@@ -42,8 +42,7 @@ const GET_FAVORITE_POKEMONS = gql`
 const GET_ALL_TYPES = gql`
 {
     pokemonTypes
-}
-`;
+}`;
 
 type myProps = {
     isFavorite: string
@@ -161,6 +160,9 @@ export class Pokemons extends Component<myProps, myState>{
                 });
             }
 
+            if (newPokemonList.length == 0) {
+                return <h2>No Pokemons to display!</h2>
+            }
             return newPokemonList.map(newPok =>
                 <Pokemon
                     key={newPok.id}
