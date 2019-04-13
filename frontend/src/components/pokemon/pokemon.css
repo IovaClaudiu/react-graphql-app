@@ -1,0 +1,41 @@
+.pokemon {
+    border: 1px solid #cccccc;
+    margin-right: 15px;
+    margin-bottom: 15px;
+}
+
+.subtitle {
+    background-color: #cccccc;
+    color: black;
+    font-weight: bold;
+}
+
+.details {
+    display: inline-block;
+    width: 50%;
+}
+
+.favButton {
+    background-position: center !important;
+    background-size: 20px !important;
+    background-repeat: no-repeat !important;
+    width: 50px;
+    height: 50px;
+    border: none;
+    position: relative;
+    left: 50px;
+    top: 5px;
+    cursor: pointer;
+}
+
+.favicon {
+    background: url("/resources/fav.png");
+}
+
+.noFavIcon {
+    background: url("/resources/nofav.jpg");
+}
+
+button:focus {
+    outline: 0;
+}

@@ -1,0 +1,41 @@
+.filterStyle {
+    width: 100%;
+    background-color: #ccc;
+    border: none;
+    text-indent: 15px;
+    height: 100%;
+}
+
+.col-md-7 {
+    padding-left: 0 !important;
+}
+
+.col-md-4 {
+    padding: 0 !important;
+}
+
+.vl {
+    position: relative;
+    border-left: 2px solid #ccc;
+    height: 35px;
+}
+
+.col-md-1 {
+    display: inline-flex;
+}
+
+.layoutButton {
+    position: relative;
+    top: 5px;
+    margin-left: 5px;
+    margin-right: 5px;
+    width: 25px;
+    height: 25px;
+}
+
+.full-size {
+    width: 100%;
+    margin-left: 0px;
+    margin-right: 0px;
+    margin-bottom: 10px;
+}
