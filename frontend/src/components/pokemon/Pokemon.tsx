@@ -1,9 +1,11 @@
 import * as React from 'react';
 import gql from "graphql-tag";
+import styled from 'styled-components';
 
 import { client } from '../App';
 import { Component } from 'react';
 import './pokemon.css';
+import { Link } from 'react-router-dom';
 
 const ADD_POKEMON_TO_FAV = gql`
 mutation ($id: ID!){
@@ -19,6 +21,17 @@ mutation removeFavorite($id: ID!){
       isFavorite
     }
   }
+`;
+
+const StyledImage = styled.div`
+        flex-grow:1;
+        display: flex;
+        align-items: center;   
+        justify-content: center;
+        img {
+            width:200px;
+            height:200px;
+        }
 `;
 
 type myProps = {
@@ -42,7 +55,11 @@ class Pokemon extends Component<myProps, myState> {
     render() {
         return (
             <div className="col-ms-4 pokemon">
-                <img src={this.props.imgSrc} style={{ width: '200px', height: '200px' }} className="img-thumbnail img-responsive" />
+                <StyledImage>
+                    <Link to={this.props.id}>
+                        <img src={this.props.imgSrc} className="img-fluid img-responsive" />
+                    </Link>
+                </StyledImage>
                 <div className="subtitle">
                     <div className="details">
                         <span style={{ marginLeft: "10px" }}>{this.props.pokemonName}</span>

@@ -22,7 +22,8 @@ const App = () => {
               <Switch>
                 <Route path="/" exact render={() => <Pokemons isFavorite="false" />} />
                 <Route path="/favorites" exact render={() => <Pokemons isFavorite="true" />} />
-                <Route path="**" render={() => <h1>&nbsp;Error, Unknown path!</h1>} />
+                <Route path="/:id" exact render={() => <h2>Work in progress</h2>} />
+                <Route path="**" render={() => <h1>Error, Unknown path!</h1>} />
               </Switch>
             </div>
           </React.Fragment>
