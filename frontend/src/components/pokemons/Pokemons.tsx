@@ -1,48 +1,10 @@
 import React, { Component } from 'react';
-import gql from "graphql-tag";
 import { Query } from "react-apollo";
-import Pokemon from '../pokemon/Pokemon';
 
+import Pokemon from '../pokemon/Pokemon';
+import { GET_ALL_POKEMONS, GET_ALL_TYPES, GET_FAVORITE_POKEMONS } from './pokemons-mutations';
 import './pokemons.css';
 
-
-const GET_ALL_POKEMONS = gql`
-{
-    pokemons(query:{
-        limit:-1
-      }){
-        edges{
-            id
-            name
-            image
-            types
-            isFavorite
-        }
-      }
-}`;
-
-const GET_FAVORITE_POKEMONS = gql`
-{
-  pokemons(query:{
-    limit: -1
-    filter: {
-      isFavorite:true
-    }
-  }){
-    edges{
-        id
-        name
-        image
-        types
-        isFavorite
-    }
-  }
-}`;
-
-const GET_ALL_TYPES = gql`
-{
-    pokemonTypes
-}`;
 
 type myProps = {
     isFavorite: string
@@ -51,9 +13,15 @@ type myProps = {
 type myState = {
     attackType: string
     nameDisplay: string
+    isDisplayCard: boolean
 }
 
 export class Pokemons extends Component<myProps, myState>{
+
+    constructor(props) {
+        super(props);
+        this.state = { attackType: "All", nameDisplay: "", isDisplayCard: true };
+    }
 
     render() {
         if (this.props.isFavorite === "true") {
@@ -63,27 +31,22 @@ export class Pokemons extends Component<myProps, myState>{
         }
     }
 
-    componentWillMount() {
-        this.setState({ attackType: "All" });
-        this.setState({ nameDisplay: "" });
-    }
-
     getFilterHeader = () => {
         return (
             <div className="row full-size">
                 <div className="col-md-7">
                     <input type="text" placeholder="Search" className="filterStyle" onChange={(event) => { this.setState({ nameDisplay: event.target.value }) }} />
                 </div>
-                <div className="col-md-4">
+                <div className="col-md-3">
                     <select className="filterStyle" onChange={(event) => { this.setState({ attackType: event.target.value }); }}>
                         <option key="All">All</option>
                         {this.getPokemonAttacks()}
                     </select>
                 </div>
-                <div className="col-md-1">
-                    <input className="layoutButton" type="image" src="./resources/horizontal.png" />
+                <div className="col-md-2">
+                    <input className="layoutButton" type="image" src="./resources/grid.png" onClick={() => { this.setState({ isDisplayCard: true }) }} />
                     <span className="vl"></span>
-                    <input className="layoutButton" type="image" src="./resources/grid.png" />
+                    <input className="layoutButton" type="image" src="./resources/horizontal.png" onClick={() => { this.setState({ isDisplayCard: false }) }} />
                 </div>
             </div>
         )
@@ -93,17 +56,19 @@ export class Pokemons extends Component<myProps, myState>{
         return (
             <React.Fragment>
                 {this.getFilterHeader()}
-                <Query query={GET_ALL_POKEMONS}>
-                    {({ loading, error, data }) => {
-                        if (loading) return <div>Fetching...</div>
-                        if (error) return <div>Error + {error}</div>
-                        if (data) {
-                            const pokemonData = data.pokemons.edges;
-                            return this.displayPokemonsByFilters(pokemonData);
-                        }
+                <div className="parentPokemonsContainer row">
+                    <Query query={GET_ALL_POKEMONS}>
+                        {({ loading, error, data }) => {
+                            if (loading) return <div>Fetching...</div>
+                            if (error) return <div>Error + {error}</div>
+                            if (data) {
+                                const pokemonData = data.pokemons.edges;
+                                return this.displayPokemonsByFilters(pokemonData);
+                            }
 
-                    }}
-                </Query>
+                        }}
+                    </Query>
+                </div>
             </React.Fragment>
         )
     }
@@ -112,19 +77,21 @@ export class Pokemons extends Component<myProps, myState>{
         return (
             <React.Fragment>
                 {this.getFilterHeader()}
-                <Query query={GET_FAVORITE_POKEMONS}>
-                    {({ loading, error, data }) => {
-                        if (loading) return <div>Fetching...</div>
-                        if (error) return <div>Error + {error}</div>
-                        if (data) {
-                            const pokemonData = data.pokemons.edges;
-                            if (pokemonData.length == 0) {
-                                return <h2>No Favorites Pokemons to display</h2>
+                <div className="parentPokemonsContainer row">
+                    <Query query={GET_FAVORITE_POKEMONS}>
+                        {({ loading, error, data }) => {
+                            if (loading) return <div>Fetching...</div>
+                            if (error) return <div>Error + {error}</div>
+                            if (data) {
+                                const pokemonData = data.pokemons.edges;
+                                if (pokemonData.length == 0) {
+                                    return <h2>No Favorites Pokemons to display</h2>
+                                }
+                                return this.displayPokemonsByFilters(pokemonData);
                             }
-                            return this.displayPokemonsByFilters(pokemonData);
-                        }
-                    }}
-                </Query>
+                        }}
+                    </Query>
+                </div>
             </React.Fragment>
         )
     }
@@ -139,7 +106,8 @@ export class Pokemons extends Component<myProps, myState>{
                         imgSrc={pok.image}
                         pokemonName={pok.name}
                         pokemonType={pok.types.join(",")}
-                        isFavorite={pok.isFavorite}>
+                        isFavorite={pok.isFavorite}
+                        isDisplayCard={this.state.isDisplayCard}>
                     </Pokemon>
                 ));
         } else {
@@ -170,7 +138,8 @@ export class Pokemons extends Component<myProps, myState>{
                     imgSrc={newPok.image}
                     pokemonName={newPok.name}
                     pokemonType={newPok.types.join(",")}
-                    isFavorite={newPok.isFavorite}>
+                    isFavorite={newPok.isFavorite}
+                    isDisplayCard={this.state.isDisplayCard}>
                 </Pokemon>);
         }
     }

@@ -8,7 +8,10 @@ import Pokemons from './pokemons/Pokemons';
 
 import './App.css';
 export const client = new ApolloClient({
-  uri: 'http://localhost:4000/graphql'
+  uri: 'http://localhost:4000/graphql',
+  cache: new InMemoryCache({
+    resultCaching: false
+  })
 });
 
 const App = () => {
@@ -18,7 +21,7 @@ const App = () => {
         <BrowserRouter>
           <React.Fragment>
             <Header />
-            <div className="row">
+            <div className="row" style={{ alignItems: "center" }}>
               <Switch>
                 <Route path="/" exact render={() => <Pokemons isFavorite="false" />} />
                 <Route path="/favorites" exact render={() => <Pokemons isFavorite="true" />} />

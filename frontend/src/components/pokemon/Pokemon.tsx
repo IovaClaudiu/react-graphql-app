@@ -1,45 +1,19 @@
 import * as React from 'react';
-import gql from "graphql-tag";
 import styled from 'styled-components';
-
-import { client } from '../App';
 import { Component } from 'react';
-import './pokemon.css';
 import { Link } from 'react-router-dom';
+import { Mutation } from 'react-apollo';
 
-const ADD_POKEMON_TO_FAV = gql`
-mutation ($id: ID!){
-    favoritePokemon(id: $id){
-      isFavorite
-    }
-  }
-`;
-
-const REMOVE_POKEMON_FROM_FAV = gql`
-mutation removeFavorite($id: ID!){
-    unFavoritePokemon(id: $id){
-      isFavorite
-    }
-  }
-`;
-
-const StyledImage = styled.div`
-        flex-grow:1;
-        display: flex;
-        align-items: center;   
-        justify-content: center;
-        img {
-            width:200px;
-            height:200px;
-        }
-`;
+import { ADD_POKEMON_TO_FAV, REMOVE_POKEMON_FROM_FAV } from './pokemon-mutations';
+import './pokemon.css';
 
 type myProps = {
     id: string,
     imgSrc: string,
     pokemonName: string,
     pokemonType: string,
-    isFavorite: boolean
+    isFavorite: boolean,
+    isDisplayCard: boolean;
 }
 
 type myState = {
@@ -50,58 +24,96 @@ class Pokemon extends Component<myProps, myState> {
 
     constructor(props) {
         super(props);
+        this.state = { isFavorite: props.isFavorite };
     }
 
     render() {
+
+        let StyledParent = styled.div`
+            border: 1px solid #cccccc;
+            margin-right: 15px;
+            margin-bottom: 15px;
+        `;
+
+        let StyledImage = styled.div`
+            flex-grow:1;
+            display: flex;
+            align-items: center;   
+            justify-content: center;
+            img {
+                width:200px;
+                height:200px;
+            }
+        `;
+
+        let StyledDetails = styled.div`
+            border: 1px solid #cccccc;    
+        `;
+
+        if (!this.props.isDisplayCard) {
+            StyledParent = styled.div`
+                display:inline-flex;
+                border: 1px solid #cccccc;
+                margin-bottom: 15px;
+                width:100%;
+            `;
+
+            StyledImage = styled.div`
+                display: flex;
+                align-items: left;   
+                justify-content: left;
+                img {
+                    width:65px;
+                    height:60px;
+                }
+            `;
+
+            StyledDetails = styled.div`
+                border: 1px solid #cccccc;
+                padding-top:5px;
+                width:100%;
+            `;
+        }
+
         return (
-            <div className="col-ms-4 pokemon">
+            <StyledParent className="col-ms-4">
                 <StyledImage>
                     <Link to={this.props.id}>
                         <img src={this.props.imgSrc} className="img-fluid img-responsive" />
                     </Link>
                 </StyledImage>
-                <div className="subtitle">
+                <StyledDetails className="subtitle">
                     <div className="details">
-                        <span style={{ marginLeft: "10px" }}>{this.props.pokemonName}</span>
+                        <span style={{ marginLeft: "10px", fontWeight: "bold" }}>{this.props.pokemonName}</span>
                         <br />
                         <span style={{ marginLeft: "10px" }}>{this.props.pokemonType}</span>
                     </div>
                     <this.FavoriteButton />
-                </div>
-            </div>
+                </StyledDetails>
+            </StyledParent>
         )
     }
 
     FavoriteButton = () => {
+        let favoriteButton;
         if (this.state.isFavorite) {
-            return (<button type="button" className="favicon favButton" onClick={() => { this.addOrRemoveFromFav(this.props.id) }}></button>)
+            favoriteButton = <Mutation
+                mutation={REMOVE_POKEMON_FROM_FAV}
+                variables={{ id: this.props.id }}>
+                {
+                    (makeUnfavorite, { client }) => (<button type="button" className="favicon favButton" onClick={() => { makeUnfavorite(); this.setState({ isFavorite: !this.state.isFavorite }); client.resetStore() }}></button>)
+                }
+            </Mutation>
         } else {
-            return (<button type="button" className="noFavIcon favButton" onClick={() => { this.addOrRemoveFromFav(this.props.id) }}></button>)
+            favoriteButton = <Mutation
+                mutation={ADD_POKEMON_TO_FAV}
+                variables={{ id: this.props.id }}>
+                {
+                    (makeFavorite, { client }) => (<button type="button" className="noFavIcon favButton" onClick={() => { makeFavorite(); this.setState({ isFavorite: !this.state.isFavorite }); client.resetStore() }}></button>)
+                }
+            </Mutation>
         }
-    }
-
-    addOrRemoveFromFav = (id: string) => {
-        if (this.state.isFavorite) {
-            client.mutate({
-                mutation: REMOVE_POKEMON_FROM_FAV,
-                variables: { id: id },
-                fetchPolicy: "no-cache"
-            }).then(() => {
-                this.setState({ isFavorite: false });
-            });
-        } else {
-            client.mutate({
-                mutation: ADD_POKEMON_TO_FAV,
-                variables: { id: id },
-                fetchPolicy: "no-cache"
-            }).then(() => {
-                this.setState({ isFavorite: true });
-            });
-        }
-    }
-
-    componentWillMount() {
-        this.setState({ isFavorite: this.props.isFavorite });
+        return favoriteButton;
     }
 }
 
