@@ -5,6 +5,7 @@ import gql from 'graphql-tag';
 import { Query, Mutation } from 'react-apollo';
 
 import { ADD_POKEMON_TO_FAV, REMOVE_POKEMON_FROM_FAV } from '../pokemon/pokemon-mutations';
+import Pokemon from '../pokemon/Pokemon';
 
 const GET_POKEMON = gql`
     query Pokemon($id: ID!) {
@@ -48,7 +49,7 @@ const StyledPokemonContainer = styled.div`
     width:430px;
     justify-content:center;
     display: flex;
-    flex-basics: 100%;
+    flex-basis: 60%;
 `;
 
 const StyledDescriptionContainer = styled.div`
@@ -118,6 +119,35 @@ const StyledSizeInfo = styled.div`
     }
 `;
 
+const StyledEvolutionParent = styled.div`
+    display:flex;
+    width: 100%;
+    flex-basis: 60%;
+`;
+
+const StyledEvolutionText = styled.div`
+    flex-grow: 1;
+    padding: 10px;
+    padding-left:0;
+    display:flex;
+    flex-direction: column;
+    align-items: left;
+    .title {
+        font-weight: 700;
+        display: block;
+    }
+`;
+
+const StyledEvolutionPokemons = styled.div`
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    flex-basis:60%;
+    > div {
+        margin-right: 10px;
+    }
+`;
+
 
 export default withRouter((props) => {
     const id = props.match.params.id;
@@ -166,9 +196,23 @@ export default withRouter((props) => {
                                     </StyledSizeInfo>
                                 </StyledSizeInfoContainer>
                             </StyledPokemonContainer>
-                            <div style={{ display: "flex", flexBasis: "100%", justifyContent: "center" }}>
-                                {data.pokemonById.evolutions.length > 0 ? <h1>Add Evolutions</h1> : ""}
-                            </div>
+
+                            <StyledEvolutionParent>
+                                {data.pokemonById.evolutions.length > 0 ? (
+                                    <StyledEvolutionText>
+                                        <span className="title">Evolutions</span>
+                                    </StyledEvolutionText>
+                                ) : ""}
+                            </StyledEvolutionParent>
+
+                            <StyledEvolutionPokemons>
+                                {
+                                    data.pokemonById.evolutions.map((pok: any) => (
+                                        <Pokemon key={pok.id} isDisplayCard={true} isFavorite={pok.isFavorite} id={pok.id} pokemonName={pok.name} imgSrc={pok.image} pokemonType="" />
+                                    ))
+                                }
+                            </StyledEvolutionPokemons>
+
                         </StyledMainContainer >
                     );
                 }
