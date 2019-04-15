@@ -117,7 +117,7 @@ class Pokemon extends Component<myProps, myState> {
     }
 
     shouldComponentUpdate(nextProps) {
-        return nextProps.isFavorite !== this.props.isFavorite;
+        return (nextProps.isFavorite !== this.props.isFavorite) || (nextProps.isDisplayCard !== this.props.isDisplayCard);
     }
 }
 
