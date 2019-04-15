@@ -115,6 +115,10 @@ class Pokemon extends Component<myProps, myState> {
         }
         return favoriteButton;
     }
+
+    shouldComponentUpdate(nextProps) {
+        return nextProps.isFavorite !== this.props.isFavorite;
+    }
 }
 
 export default Pokemon;

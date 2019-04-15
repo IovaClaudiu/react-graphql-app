@@ -7,6 +7,7 @@ import Header from './header/Header';
 import Pokemons from './pokemons/Pokemons';
 
 import './App.css';
+import PokemonDetails from './pokemon_detail/pokemon-details';
 export const client = new ApolloClient({
   uri: 'http://localhost:4000/graphql',
   cache: new InMemoryCache({
@@ -25,7 +26,7 @@ const App = () => {
               <Switch>
                 <Route path="/" exact render={() => <Pokemons isFavorite="false" />} />
                 <Route path="/favorites" exact render={() => <Pokemons isFavorite="true" />} />
-                <Route path="/:id" exact render={() => <h2>Work in progress</h2>} />
+                <Route path="/:id" exact component={() => <PokemonDetails />} />
                 <Route path="**" render={() => <h1>Error, Unknown path!</h1>} />
               </Switch>
             </div>
