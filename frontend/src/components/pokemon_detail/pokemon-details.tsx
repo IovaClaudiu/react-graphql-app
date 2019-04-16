@@ -61,6 +61,13 @@ const StyledDescriptionContainer = styled.div`
     padding-bottom:0;
 `;
 
+const StyledDescriptionSize = styled.div`
+    width: 90%;
+    .bold {
+        font-weight:bold;
+    } 
+`;
+
 const StyledHealthContainer = styled.div`
     display: flex;
     flex-direction: column;
@@ -164,11 +171,11 @@ export default withRouter((props) => {
                             <StyledPokemonContainer className="row">
                                 <img src={data.pokemonById.image} alt={data.pokemonById.name} className="img-responsive" />
                                 <StyledDescriptionContainer>
-                                    <div style={{ width: "90%" }}>
-                                        <span style={{ fontWeight: "bold" }}>{data.pokemonById.name}</span>
+                                    <StyledDescriptionSize>
+                                        <span className="bold">{data.pokemonById.name}</span>
                                         <br />
                                         <span>{data.pokemonById.types.join(",")}</span>
-                                    </div>
+                                    </StyledDescriptionSize>
                                     <FavoriteButton isFavorite={data.pokemonById.isFavorite} id={data.pokemonById.id} />
                                 </StyledDescriptionContainer>
 

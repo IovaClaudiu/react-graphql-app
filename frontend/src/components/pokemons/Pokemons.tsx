@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Query } from "react-apollo";
+import styled from 'styled-components';
 
 import Pokemon from '../pokemon/Pokemon';
 import { GET_ALL_POKEMONS, GET_ALL_TYPES, GET_FAVORITE_POKEMONS } from './pokemons-mutations';
@@ -15,6 +16,66 @@ type myState = {
     nameDisplay: string
     isDisplayCard: boolean
 }
+
+const StyledDiv = styled.div`
+    &.col-md-2 {
+        align-items: center;
+        display: flex;
+        justify-content: center;
+    }
+    &.col-md-7 {
+        padding-left: 0 !important;
+    }
+    &.col-md-3 {
+        padding: 0 !important;
+    }
+`;
+
+const StyledHeaderContainer = styled.div`
+    width: 100%;
+    margin-left: 0px;
+    margin-right: 0px;
+    margin-bottom: 10px;
+    display: flex;
+    text-align: center;
+`;
+
+const StyledVerticalLine = styled.span`
+    position: relative;
+    border-left: 2px solid #ccc;
+    height: 35px;   
+`;
+
+const StyledInputIcon = styled.input`
+    margin-left: 5px;
+    margin-right: 5px;
+    width: 25px;
+    height: 25px;
+`;
+
+const StyledInputText = styled.input`
+    width: 100%;
+    background-color: #ccc;
+    border: none;
+    text-indent: 15px;
+    height: 100%;
+`;
+
+const StyledSelect = styled.select`
+    width: 100%;
+    background-color: #ccc;
+    border: none;
+    text-indent: 15px;
+    height: 100%;
+`;
+
+const StyledPokemonsContainer = styled.div`
+    margin-right: 0;
+    margin-left: 0;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+`;
 
 export class Pokemons extends Component<myProps, myState>{
 
@@ -33,22 +94,22 @@ export class Pokemons extends Component<myProps, myState>{
 
     getFilterHeader = () => {
         return (
-            <div className="row full-size">
-                <div className="col-md-7">
-                    <input type="text" placeholder="Search" className="filterStyle" onChange={(event) => { this.setState({ nameDisplay: event.target.value }) }} />
-                </div>
-                <div className="col-md-3">
-                    <select className="filterStyle" onChange={(event) => { this.setState({ attackType: event.target.value }); }}>
+            <StyledHeaderContainer className="row">
+                <StyledDiv className="col-md-7">
+                    <StyledInputText type="text" placeholder="Search" onChange={(event) => { this.setState({ nameDisplay: event.target.value }) }} />
+                </StyledDiv>
+                <StyledDiv className="col-md-3">
+                    <StyledSelect onChange={(event) => { this.setState({ attackType: event.target.value }); }}>
                         <option key="All">All</option>
                         {this.getPokemonAttacks()}
-                    </select>
-                </div>
-                <div className="col-md-2">
-                    <input className="layoutButton" type="image" src="./resources/grid.png" onClick={() => { this.setState({ isDisplayCard: true }) }} />
-                    <span className="vl"></span>
-                    <input className="layoutButton" type="image" src="./resources/horizontal.png" onClick={() => { this.setState({ isDisplayCard: false }) }} />
-                </div>
-            </div>
+                    </StyledSelect>
+                </StyledDiv>
+                <StyledDiv className="col-md-2">
+                    <StyledInputIcon type="image" src="./resources/grid.png" onClick={() => { this.setState({ isDisplayCard: true }) }} />
+                    <StyledVerticalLine />
+                    <StyledInputIcon type="image" src="./resources/horizontal.png" onClick={() => { this.setState({ isDisplayCard: false }) }} />
+                </StyledDiv>
+            </StyledHeaderContainer>
         )
     }
 
@@ -56,7 +117,7 @@ export class Pokemons extends Component<myProps, myState>{
         return (
             <React.Fragment>
                 {this.getFilterHeader()}
-                <div className="parentPokemonsContainer row">
+                <StyledPokemonsContainer className="row">
                     <Query query={GET_ALL_POKEMONS}>
                         {({ loading, error, data }) => {
                             if (loading) return <div>Fetching...</div>
@@ -68,7 +129,7 @@ export class Pokemons extends Component<myProps, myState>{
 
                         }}
                     </Query>
-                </div>
+                </StyledPokemonsContainer>
             </React.Fragment>
         )
     }
@@ -77,7 +138,7 @@ export class Pokemons extends Component<myProps, myState>{
         return (
             <React.Fragment>
                 {this.getFilterHeader()}
-                <div className="parentPokemonsContainer row">
+                <StyledPokemonsContainer className="row">
                     <Query query={GET_FAVORITE_POKEMONS}>
                         {({ loading, error, data }) => {
                             if (loading) return <div>Fetching...</div>
@@ -91,7 +152,7 @@ export class Pokemons extends Component<myProps, myState>{
                             }
                         }}
                     </Query>
-                </div>
+                </StyledPokemonsContainer>
             </React.Fragment>
         )
     }

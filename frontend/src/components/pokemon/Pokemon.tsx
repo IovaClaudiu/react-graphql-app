@@ -47,7 +47,23 @@ class Pokemon extends Component<myProps, myState> {
         `;
 
         let StyledDetails = styled.div`
-            border: 1px solid #cccccc;    
+            border: 1px solid #cccccc;
+            background-color: #eee;
+            color: black;
+            display: inline-flex;
+            width: 100%;    
+        `;
+
+        const StyledSubtitles = styled.div`
+            width: 95%;
+            .pokemonName {
+                margin-left: 10px;
+                font-weight: bold;
+            }
+            .pokemonType{
+                margin-left: 10px;
+            }
+            
         `;
 
         if (!this.props.isDisplayCard) {
@@ -72,6 +88,10 @@ class Pokemon extends Component<myProps, myState> {
                 border: 1px solid #cccccc;
                 padding-top:5px;
                 width:100%;
+                background-color: #eee;
+                color: black;
+                display: inline-flex;
+                
             `;
         }
 
@@ -82,12 +102,12 @@ class Pokemon extends Component<myProps, myState> {
                         <img src={this.props.imgSrc} className="img-fluid img-responsive" />
                     </Link>
                 </StyledImage>
-                <StyledDetails className="subtitle">
-                    <div className="details">
-                        <span style={{ marginLeft: "10px", fontWeight: "bold" }}>{this.props.pokemonName}</span>
+                <StyledDetails>
+                    <StyledSubtitles>
+                        <span className="pokemonName">{this.props.pokemonName}</span>
                         <br />
-                        <span style={{ marginLeft: "10px" }}>{this.props.pokemonType}</span>
-                    </div>
+                        <span className="pokemonType">{this.props.pokemonType}</span>
+                    </StyledSubtitles>
                     <this.FavoriteButton />
                 </StyledDetails>
             </StyledParent>
